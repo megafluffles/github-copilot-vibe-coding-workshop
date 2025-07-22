@@ -1,7 +1,4 @@
-FROM ubuntu:24.04
-
-# Set DEBIAN_FRONTEND for the entire build process (or specific RUN commands)
-ENV DEBIAN_FRONTEND=noninteractive
+FROM ubuntu:22.04
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
