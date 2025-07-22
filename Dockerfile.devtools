@@ -24,6 +24,9 @@ RUN add-apt-repository ppa:deadsnakes/ppa && \
     rm -rf /var/lib/apt/lists/*
 RUN ln -sf /usr/bin/python3.12 /usr/bin/python3
 
+# This makes `python` command point to `python3` globally in the container.
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1
+
 # Install Node.js v22.17.0 and npm 10.9.2
 RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
     apt-get install -y nodejs && \
