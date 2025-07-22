@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  devtools:
+    build:
+      context: .
+      dockerfile: Dockerfile.devtools
+    image: devtools:latest
+    container_name: devtools
+    tty: true
+    stdin_open: true
+    volumes:
+      - ./:/workspace
+    working_dir: /workspace
