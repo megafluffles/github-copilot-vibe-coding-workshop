@@ -4,7 +4,8 @@ info:
   version: 1.0.0
   description: API for basic social networking features (posts, comments, likes).
 servers:
-  - url: https://obscure-lamp-qxqgw59q7pc4pj5-8000.app.github.dev
+  - url: http://localhost:8000
+  # - url: https://obscure-lamp-qxqgw59q7pc4pj5-8000.app.github.dev
 paths:
   /posts:
     get:
