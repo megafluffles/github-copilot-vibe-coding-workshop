@@ -140,10 +140,10 @@ def now_iso() -> str:
 async def list_posts():
     async with aiosqlite.connect(DB_PATH) as db:
         db.row_factory = aiosqlite.Row
-        posts = await db.execute_fetchall("SELECT * FROM posts ORDER BY createdAt DESC")
+        posts = await db.execute().fetchone("SELECT * FROM posts ORDER BY createdAt DESC")
         result = []
         for post in posts:
-            comments = await db.execute_fetchall("SELECT * FROM comments WHERE postId = ? ORDER BY createdAt ASC", (post["id"],))
+            comments = await db.execute().fetchone("SELECT * FROM comments WHERE postId = ? ORDER BY createdAt ASC", (post["id"],))
             result.append(Post(
                 id=post["id"],
                 username=post["username"],
@@ -181,10 +181,10 @@ async def create_post(body: PostCreate):
 async def get_post(postId: str):
     async with aiosqlite.connect(DB_PATH) as db:
         db.row_factory = aiosqlite.Row
-        post = await db.execute_fetchone("SELECT * FROM posts WHERE id = ?", (postId,))
+        post = await db.execute().fetchone("SELECT * FROM posts WHERE id = ?", (postId,))
         if not post:
             raise HTTPException(status_code=404, detail="Post not found")
-        comments = await db.execute_fetchall("SELECT * FROM comments WHERE postId = ? ORDER BY createdAt ASC", (postId,))
+        comments = await db.execute().fetchone("SELECT * FROM comments WHERE postId = ? ORDER BY createdAt ASC", (postId,))
         return Post(
             id=post["id"],
             username=post["username"],
@@ -209,7 +209,7 @@ async def update_post(postId: str, body: PostUpdate):
             (body.username, body.content, now, postId)
         )
         await db.commit()
-        comments = await db.execute_fetchall("SELECT * FROM comments WHERE postId = ? ORDER BY createdAt ASC", (postId,))
+        comments = await db.execute().fetchone("SELECT * FROM comments WHERE postId = ? ORDER BY createdAt ASC", (postId,))
         updated_post = await db.execute_fetchone("SELECT * FROM posts WHERE id = ?", (postId,))
         return Post(
             id=updated_post["id"],
@@ -241,7 +241,7 @@ async def list_comments(postId: str):
         post = await db.execute_fetchone("SELECT * FROM posts WHERE id = ?", (postId,))
         if not post:
             raise HTTPException(status_code=404, detail="Post not found")
-        comments = await db.execute_fetchall("SELECT * FROM comments WHERE postId = ? ORDER BY createdAt ASC", (postId,))
+        comments = await db.execute().fetchone("SELECT * FROM comments WHERE postId = ? ORDER BY createdAt ASC", (postId,))
         return [Comment(**dict(c)) for c in comments]
 
 @app.post("/posts/{postId}/comments", response_model=Comment, status_code=status.HTTP_201_CREATED)
